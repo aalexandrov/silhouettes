@@ -1,13 +1,13 @@
 package eu.androv.alex.silhouette.frontend;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 
+import java.awt.Color;
 import java.io.File;
 
 import org.apache.log4j.Logger;
-
-import eu.androv.alex.silhouette.imagej.roi.Bezier_Curve;
 
 /**
  * Hello world!
@@ -35,7 +35,11 @@ public class EditorApp {
 			System.out.println("Usage: silhouette [image1] [image2] ... [imageN]");
 			System.exit(-1);
 		}
-
+		
+		logger.info("Starting ImageJ instance");
+		ImageJ instance = new ImageJ(null, ImageJ.EMBEDDED);
+		IJ.runPlugIn("eu.androv.alex.silhouette.imagej.tool.Bezier_Curve_Tool", "");
+		
 		for (String imagePath : args) {
 			File imageFile = new File(imagePath);
 			if (!imageFile.isFile() || !imageFile.canRead()) {
@@ -43,10 +47,6 @@ public class EditorApp {
 			} else {
 				logger.info(String.format("Editing image '%s'", imagePath));
 				ImagePlus imp = IJ.openImage(imagePath);
-				
-				Bezier_Curve bc = new Bezier_Curve();
-				bc.setup("Bezier Curves", imp);
-//				bc.run(imp.getProcessor());
 				imp.show();
 			}
 		}
